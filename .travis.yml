@@ -1,13 +1,35 @@
 # Config file for automatic testing at travis-ci.org
 
 language: python
-
 python:
-  - "3.4"
-  - "2.7"
+  - 3.6
+  - 3.4
+  - 2.7
 
-# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install: pip install -r requirements.txt
 
-# command to run tests, e.g. python setup.py test
-script: python setup.py test
+stages:
+  - lint
+  - docs
+  - test
+
+env:
+  - TOXENV=py
+
+jobs:
+  include:
+    # lint stage
+    - stage: lint
+      env: TOXENV=pyroma
+
+matrix:
+  allow_failures:
+      - env: TOXENV=pyroma
+
+install:
+  - sh -c 'if [ "$TOXENV" = "py" ]; then pip install tox codecov; else pip install tox; fi'
+
+script:
+  - tox
+
+after_success:
+  - sh -c 'if [ "$TOXENV" = "py" ]; then tox -e coverage-report; codecov; fi'
