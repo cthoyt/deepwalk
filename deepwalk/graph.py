@@ -15,7 +15,7 @@ from collections import defaultdict, Iterable
 from multiprocessing import cpu_count
 import random
 from random import shuffle
-from itertools import product,permutations
+from itertools import product,permutations,chain
 from scipy.io import loadmat
 from scipy.sparse import issparse
 
@@ -38,7 +38,7 @@ class Graph(defaultdict):
     super(Graph, self).__init__(list)
 
   def nodes(self):
-    return self.keys()
+    return set(self) | set(chain.from_iterable(self.values()))
 
   def adjacency_iter(self):
     return self.iteritems()
