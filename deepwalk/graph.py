@@ -141,13 +141,13 @@ class Graph(defaultdict):
 
     while len(path) < path_length:
       cur = path[-1]
-      if len(G[cur]) > 0:
-        if rand.random() >= alpha:
-          path.append(rand.choice(G[cur]))
-        else:
-          path.append(path[0])
-      else:
+      if not G[cur]:  # if the node has no targets, then don't walk on it
         break
+      if rand.random() >= alpha:
+        path.append(rand.choice(G[cur]))
+      else:
+        path.append(path[0])
+
     return [str(node) for node in path]
 
 # TODO add build_walks in here
